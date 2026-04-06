@@ -4,8 +4,6 @@
 #include "c4lib.h"
 using namespace std;
 
-// Add any prototypes and/or functions you like here
-
 
 
 int main(int argc, char* argv[])
@@ -17,26 +15,22 @@ int main(int argc, char* argv[])
   int ydim, xdim, seed;
   BoardValue** board = NULL;
 
-  // Add code here to convert the  command line arguments to  
   //  set the value ydim and xdim 
     ydim = atoi(argv[1]);
     xdim = atoi(argv[2]);
   
-  // Since the seed is optional we need to check if there
-	// is another argument
   if(argc >= 5){
 		// set the seed with the integer value from the command line
     seed = atoi(argv[4]);
   }
 	else {
 		// if no seed was provided we'll use the current time
-    // Do not alter
 		seed = time(0);
 	}
   srand(seed);
 
 
-  // Do not alter - determine the player modes
+  // determine the player modes
   int numP = 2;
   if(strcmp(argv[3],"1P") == 0 || strcmp(argv[3], "1p") == 0){
     numP = 1;
@@ -49,19 +43,18 @@ int main(int argc, char* argv[])
   }
   cout << "Num players: " << numP << endl;
 
-  // Any initialization code
+  // initialization code
   board = allocateBoard(ydim, xdim);
 
-  // Do not alter these declarations 
+  // declarations 
   int turn = 0;        // Number of turns for the game 
   int player = 0;      // MUST alternate between 0 (red) and 1 (yellow) 
                        // to represent the two players
-  bool error = false;  // input error?
+  bool error = false;  
   bool win = false;
   bool draw = false;
   while(true){
     // ------------------------------------------------------------
-    // Do not alter
     // Increment the turn and print the board
   
     printBoard(board, ydim, xdim);
@@ -86,10 +79,7 @@ int main(int argc, char* argv[])
     }
     // ------------------------------------------------------------
 
-    // Add necessary code to deal with errors and determine if 
-    // there is a winner or a draw. Then change to the next player
-    // and repeat!
-
+    // deal with errors and determine if there is a winner or a draw. Then change to the next player and repeat!
 
     if(error){
       break;
@@ -104,14 +94,11 @@ int main(int argc, char* argv[])
     break;
    }
    
-    // Be sure to switch the player
+    // switch the player
     player = 1 - player;
 
   }
-  // Only fill in the conditions of the code below.  
-	//  This code will output the expected messages but you
-	//  have to complete the conditions based on your 
-	//  implementation above.
+	//  output the expected messages 
   printBoard(board, ydim, xdim);
   if(win) {
     if(player == 1){
@@ -131,8 +118,7 @@ int main(int argc, char* argv[])
   cout <<  "Last turn " << turn <<  endl;
 
 
-  // Add any final cleanup or code that you deem necessary
-	// but no additional printing/output should be performed
+  // final cleanup 
 
   deallocateBoard(board, ydim);
 
