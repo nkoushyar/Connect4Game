@@ -22,7 +22,6 @@ enum BoardValue playerToValue[2] = {RED, YELLOW};
 // Helper function 
 int findYValue(BoardValue** board, int ydim,  int x)
 {
-  // You complete!
   for(int y = 0; y < ydim; y++){
     if(board[y][x] == BLANK){
       return y;
@@ -35,7 +34,6 @@ int findYValue(BoardValue** board, int ydim,  int x)
 
 BoardValue** allocateBoard(int ydim,  int xdim)
 {
-  // You complete!
   BoardValue** board = new BoardValue*[ydim];
   for(int y = 0; y < ydim; y++){
     board[y] = new BoardValue[xdim];
@@ -48,7 +46,6 @@ BoardValue** allocateBoard(int ydim,  int xdim)
 }
 void deallocateBoard(BoardValue** board,  int ydim)
 {
-  // You complete!
   for(int y = 0; y < ydim; y++){
     delete [] board[y];
   }
@@ -57,7 +54,6 @@ void deallocateBoard(BoardValue** board,  int ydim)
 
 void printBoard(BoardValue** board,  int ydim, int xdim)
 {
-  // Complete - Do not alter
   const char* boardToString[] = { "\U000026ab", "\U0001F534", "\U0001F7E1" }; 
                                   //  "⚫",          "🔴",         "🟡"}
   for(int y = ydim-1; y >= 0; y--){
@@ -75,7 +71,6 @@ bool getNextHumanInput(
   int *y, int *x,
   int currentPlayer)
 {
-  // You complete
   if(!(cin >> *x)){
     return true;
   }
@@ -105,17 +100,16 @@ bool hasWon(
   int sy, int sx,
   int currentPlayer)
 {
-  // Keep, modify, or delete these as you desire
+
   const int NDIRS=4;
   const int yDirDelta[NDIRS] = {+1,  0, +1, +1};
   const int xDirDelta[NDIRS] = { 0, +1, -1, +1};
-  // You complete!
   BoardValue val = playerToValue[currentPlayer];
 
   for(int d = 0; d < NDIRS; d++){
     int count = 1;
 
-    //foward firection
+    //foward direction
     int y = sy + yDirDelta[d];
     int x = sx + xDirDelta[d];
     while(y >= 0 && y < ydim && x >= 0 && x < xdim && board[y][x] == val){
@@ -143,7 +137,6 @@ bool isDraw(
   BoardValue** board,
   int ydim,  int xdim)
 {
-  // You complete!
     for(int x = 0; x < xdim; x++){
       if(board[ydim-1][x] == BLANK){
         return false;
@@ -163,7 +156,6 @@ bool getUserAIInput(
 { BoardValue me = playerToValue[currentPlayer];
   BoardValue opp = playerToValue[1-currentPlayer];
 
-  // You complete!
   // Check if the current player can win
 
   for(int col = 0; col < xdim; col++){
@@ -178,7 +170,6 @@ bool getUserAIInput(
     }
     board[row][col] = BLANK;
   }
-  // Check if we need to block 
   //  We can greedily play the first blocking location since
   //  if they can win in multiple ways it does not matter which
   //  we choose.
@@ -197,7 +188,6 @@ bool getUserAIInput(
   }
 
 
-  // Add any other logic for how to choose a location to play
   // if neither case above occurs
   for(int col = 0; col < xdim; col++){
     int row = findYValue(board, ydim, col);
@@ -212,7 +202,6 @@ bool getUserAIInput(
   
 }
 
-// Complete - Do not alter
 bool getRandomAIInput(
   BoardValue** board, 
   int ydim, int xdim, 
