@@ -127,8 +127,6 @@ bool getRandomAIInput(
   int currentPlayer);
 
 // --------------------------------------------------------------------------
-// You can add prototypes if you want to define other functions in c4lib.cpp
-// that you'd like to call in connect4.cpp
 
 
 #endif
