@@ -1,39 +1,21 @@
 #include "c4lib.h"
 #include <iostream>
+#include <cstdlib>
+
 using namespace std;
 
-// Prototype internal helper functions
-/**
- * @brief returns the smallest y coordinate that is BLANK in 
- *        column x or -1 if no location is BLANK
- */
-int findYValue(BoardValue** board, int ydim, int x);
-
-
-// ------------------------------------------------------------
-// Global variabes - the ONLY we allow in this program
-
-// converts integer player value: 0 or 1 to appropriate enum
 enum BoardValue playerToValue[2] = {RED, YELLOW};
 
-// ----------------------------------------------------------------------
-
-
-// Helper function 
-int findYValue(BoardValue** board, int ydim,  int x)
-{
+int findYValue(BoardValue** board, int ydim, int x) {
   for(int y = 0; y < ydim; y++){
     if(board[y][x] == BLANK){
       return y;
     }
   }
-  return -1; //colomn full
-
-
+  return -1; 
 }
 
-BoardValue** allocateBoard(int ydim,  int xdim)
-{
+BoardValue** allocateBoard(int ydim, int xdim) {
   BoardValue** board = new BoardValue*[ydim];
   for(int y = 0; y < ydim; y++){
     board[y] = new BoardValue[xdim];
@@ -42,20 +24,17 @@ BoardValue** allocateBoard(int ydim,  int xdim)
     }
   }
   return board;
-
 }
-void deallocateBoard(BoardValue** board,  int ydim)
-{
+
+void deallocateBoard(BoardValue** board, int ydim) {
   for(int y = 0; y < ydim; y++){
     delete [] board[y];
   }
   delete [] board;
 }
 
-void printBoard(BoardValue** board,  int ydim, int xdim)
-{
+void printBoard(BoardValue** board, int ydim, int xdim) {
   const char* boardToString[] = { "\U000026ab", "\U0001F534", "\U0001F7E1" }; 
-                                  //  "⚫",          "🔴",         "🟡"}
   for(int y = ydim-1; y >= 0; y--){
     for(int x = 0; x < xdim; x++) {
       cout << boardToString[(int)board[y][x]] << " ";
@@ -65,51 +44,33 @@ void printBoard(BoardValue** board,  int ydim, int xdim)
   cout << endl;
 }
 
-bool getNextHumanInput(
-  BoardValue** board, 
-  int ydim,  int xdim, 
-  int *y, int *x,
-  int currentPlayer)
-{
+bool getNextHumanInput(BoardValue** board, int ydim, int xdim, int *y, int *x, int currentPlayer) {
   if(!(cin >> *x)){
     return true;
   }
   if(*x == -1){
-    return true; // early exit
+    return true; 
   }
-
   if(*x < 0 || *x >= xdim){
-    return true; //early exit condition
+    return true; 
   }
-  
   int row = findYValue(board, ydim, *x);
-
   if(row == -1){
     return true;
   }
-
   *y = row;
   board[row][*x] = playerToValue[currentPlayer];
   return false;
-
 }
 
-bool hasWon(
-  BoardValue** board,
-  int ydim,  int xdim,
-  int sy, int sx,
-  int currentPlayer)
-{
-
-  const int NDIRS=4;
+bool hasWon(BoardValue** board, int ydim, int xdim, int sy, int sx, int currentPlayer) {
+  const int NDIRS = 4;
   const int yDirDelta[NDIRS] = {+1,  0, +1, +1};
   const int xDirDelta[NDIRS] = { 0, +1, -1, +1};
   BoardValue val = playerToValue[currentPlayer];
 
   for(int d = 0; d < NDIRS; d++){
     int count = 1;
-
-    //foward direction
     int y = sy + yDirDelta[d];
     int x = sx + xDirDelta[d];
     while(y >= 0 && y < ydim && x >= 0 && x < xdim && board[y][x] == val){
@@ -117,8 +78,6 @@ bool hasWon(
       y += yDirDelta[d];
       x += xDirDelta[d];
     }
-
-    //backward direction
     y = sy - yDirDelta[d];
     x = sx - xDirDelta[d];
     while(y >= 0 && y < ydim && x >= 0 && x < xdim && board[y][x] == val){
@@ -133,36 +92,25 @@ bool hasWon(
   return false;
 }
 
-bool isDraw(
-  BoardValue** board,
-  int ydim,  int xdim)
-{
-    for(int x = 0; x < xdim; x++){
-      if(board[ydim-1][x] == BLANK){
-        return false;
+bool isDraw(BoardValue** board, int ydim, int xdim) {
+  for(int x = 0; x < xdim; x++){
+    if(board[ydim-1][x] == BLANK){
+      return false;
     }
   }
   return true;
-
 }
 
-
-
-bool getUserAIInput(
-  BoardValue** board, 
-  int ydim,  int xdim, 
-  int *y, int *x,
-  int currentPlayer)
-{ BoardValue me = playerToValue[currentPlayer];
+bool getUserAIInput(BoardValue** board, int ydim, int xdim, int *y, int *x, int currentPlayer) { 
+  BoardValue me = playerToValue[currentPlayer];
   BoardValue opp = playerToValue[1-currentPlayer];
 
-  // Check if the current player can win
-
+  // 1. Check for immediate WIN
   for(int col = 0; col < xdim; col++){
     int row = findYValue(board, ydim, col);
     if(row == -1) continue;
     
-    board[row][col] = me;   // ← make EXACTLY ONE real move
+    board[row][col] = me;   
     if(hasWon(board, ydim, xdim, row, col, currentPlayer)){
       *x = col;
       *y = row;
@@ -170,16 +118,15 @@ bool getUserAIInput(
     }
     board[row][col] = BLANK;
   }
-  //  We can greedily play the first blocking location since
-  //  if they can win in multiple ways it does not matter which
-  //  we choose.
+
+  // 2. Check for immediate BLOCK
   for(int col = 0; col < xdim; col++){
     int row = findYValue(board, ydim, col);
     if(row == -1) continue;
 
     board[row][col] = opp;
     if(hasWon(board, ydim, xdim, row, col, 1-currentPlayer)){
-      board[row][col] = me;
+      board[row][col] = me; // Convert block path to active placement
       *x = col;
       *y = row;
       return false;
@@ -187,40 +134,31 @@ bool getUserAIInput(
     board[row][col] = BLANK;
   }
 
-
-  // if neither case above occurs
-  for(int col = 0; col < xdim; col++){
+  // 3. Balanced Fallback Strategy (Outward center check)
+  int searchOrder[7] = {3, 4, 2, 5, 1, 6, 0};
+  for(int i = 0; i < xdim; i++){
+    int col = searchOrder[i];
     int row = findYValue(board, ydim, col);
     if(row != -1){
-      board[row][col] = me;
       *x = col;
       *y = row;
+      board[row][col] = me; // Commit the piece to the board
       return false;
     }
   }
-  return true; //no moves possible
-  
+  return true; 
 }
 
-bool getRandomAIInput(
-  BoardValue** board, 
-  int ydim, int xdim, 
-  int *y, int *x,
-  int currentPlayer)
-{
-  // Allocate variable size array (we don't know xdim when we compile)
+bool getRandomAIInput(BoardValue** board, int ydim, int xdim, int *y, int *x, int currentPlayer) {
   int* possible = new int[xdim];
   int numX = 0;
   bool error = true;
-  // find all the possible columns with a blank
   for(int i = 0; i < xdim; i++){
     if(board[ydim-1][i] == BLANK){
       possible[numX++] = i;
     }
   }
-  // If at least 1 column has a blank
   if(numX != 0){
-    // Choose one column
     *x = possible[rand()%numX];
     *y = findYValue(board, ydim, *x);
     board[*y][*x] = playerToValue[currentPlayer];
@@ -229,5 +167,3 @@ bool getRandomAIInput(
   delete [] possible;
   return error;
 }
-
-
