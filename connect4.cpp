@@ -56,9 +56,6 @@ int main(int argc, char* argv[])
     return 0; // Terminate early so we don't drop into standard interactive CLI loops
   }
 
-  // ==========================================
-  // ORIGINAL INTERACTIVE CLI LOGIC
-  // ==========================================
   if(argc >= 5){
     // set the seed with the integer value from the command line
     seed = atoi(argv[4]);
