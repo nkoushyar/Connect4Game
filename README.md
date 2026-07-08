@@ -36,35 +36,33 @@ Valgrind (for memory debugging)
 
 How to Run
 
-Compile the Core C++ Engine:
-g++ connect4.cpp c4lib.cpp -o engines/connect4_engine
-
-Run the Backend API Wrapper:
-npm install
-node server.js
-
-Run the Frontend React UI:
-npm install
-npm start
+Compile the C++ Engine: g++ connect4.cpp c4lib.cpp -o connect4_engine
+Launch the Backend Bridge: node server.js (should output: `🚀 Backend bridge spinning on port 5001`) NOTE: leave this terminal open and active
+Launch the Frontend Layout: Open a second terminal window, navigate to the frontend directory with `cd client`, and initiate the Vite development server by executing `npm run dev`. Once the green Vite logo appears pointing to `http://localhost:5173/`, open this link in your browser
+Clear Browser Cache: If the game was already open, perform a hard refresh by pressing `Cmd + Shift + R` (or `Ctrl + F5` on Windows) to flush the browser's temporary memory
 
 Game Rules
+
 Players take turns dropping pieces into columns
 Pieces fall to the lowest available row
 First player to connect 4 in a row (horizontal, vertical, or diagonal) wins
 If the board fills with no winner, the game ends in a draw
 
 AI Behavior
+
 The AI follows simple rules:
 Win if possible
 Block opponent if they are about to win
 Otherwise choose a valid column
 
 Testing
+
 Tested winning scenarios, draw conditions, and input validation
 Used randomized simulations to verify correctness
 Checked memory safety with: valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all ./engines/connect4_engine
 
 Future Improvements
+
 Implement Minimax algorithm for stronger AI
 Containerize application using Docker for deployment on AWS/GCP
 Improve AI decision-making with heuristics
